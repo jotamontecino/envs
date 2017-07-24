@@ -1,7 +1,6 @@
 # Production
 Flask >= 0.12.2
 redis
-mysql-python
 simplejson
 Flask-Script
 pika
