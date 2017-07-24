@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" charset="utf-8"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/js/charts/Chart.bundle.min.js"></script>
+    <script>
+    window.chartColors = {
+    	red: 'rgb(255, 99, 132)',
+    	orange: 'rgb(255, 159, 64)',
+    	yellow: 'rgb(255, 205, 86)',
+    	green: 'rgb(75, 192, 192)',
+    	blue: 'rgb(54, 162, 235)',
+    	purple: 'rgb(153, 102, 255)',
+    	grey: 'rgb(201, 203, 207)',
+    	pink: 'rgb(255,192,203)'
+    };
+    window.onload = function() {
+      $.ajax({
+        url: "facturation",
+      }).done(function(data) {
+        // $( this ).addClass( "done" );
+        console.log('ajaxDone', data)
+        var totalCout = 0;
+        var dataset = [];
+        var dataColor = [
+          window.chartColors.red,
+          window.chartColors.orange,
+          window.chartColors.yellow,
+          window.chartColors.green,
+          window.chartColors.blue,
+          window.chartColors.purple,
+          window.chartColors.pink
+        ]
+        var color = Chart.helpers.color;
+        var datasetIndex = []
+        data.map(function(el){
+          var categoryUrn = el['Catégorie du compteur'].toLowerCase();
+          var subCategoryUrn = el['Sous-catégorie du compteur'].toLowerCase();
+          if ( subCategoryUrn === "") { subCategoryUrn = categoryUrn }
+          // console.log('ITEM', categoryUrn, el);
+          if (datasetIndex[subCategoryUrn]) {
+            var dataSetTemp = dataset[datasetIndex[subCategoryUrn]];
+            dataSetTemp.data[0] = dataSetTemp.data[0] + parseFloat(el['Valeur'].replace(',', '.'));
+            totalCout += parseFloat(el['Valeur'].replace(',', '.'));
+            dataset[datasetIndex[subCategoryUrn]] = dataSetTemp;
+            console.log('Compteur', el['Catégorie du compteur'],'->', el['Sous-catégorie du compteur'], ':', el['Valeur']);
+            // console.log(el['Sous-catégorie du compteur'], el);
+          }
+          else {
+            datasetIndex[subCategoryUrn] = dataset.length;
+            var label = el['Sous-catégorie du compteur'];
+            if (label == ""){ label = el['Catégorie du compteur']; }
+            var colorDataset = 'rgb('+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+')';
+            totalCout += parseFloat(el['Valeur'].replace(',', '.'));
+            console.log('Compteur', el['Catégorie du compteur'],'->', el['Sous-catégorie du compteur'], ':', el['Valeur']);
+            dataset.push({
+              label: label,
+              backgroundColor: color(colorDataset).rgbString(),
+              data : [parseFloat(el['Valeur'].replace(',', '.'))]
+            });
+            // console.log(el['Sous-catégorie du compteur'], el);
+          }
+        })
+        console.log('dataset', dataset);
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myBar = new Chart(ctx, {
+            type: 'bar',
+            data: {labels: ['201706'], datasets: dataset},
+            options: {
+                responsive: true,
+                title:{
+                    display:true,
+                    text:"Facturation total - :"+totalCout
+                },
+                legend: {
+                  position: 'right',
+                },
+                scales: {
+                    yAxes: [{
+                        type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        position: "left",
+                        id: "y-axis-1",
+                    }, {
+                        type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        position: "right",
+                        id: "y-axis-2",
+                        gridLines: {
+                            drawOnChartArea: false
+                        }
+                    }],
+                }
+            }
+        });
+      });
+    }
+    </script>
+  </head>
+  <body>
+    <h1>{{ title }}</h1>
+    <div style="width: 75%">
+        <canvas id="canvas"></canvas>
+    </div>
+  </body>
+</html>

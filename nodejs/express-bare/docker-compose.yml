@@ -1,0 +1,17 @@
+version: '2'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: service_mongo
+    ports:
+        - 27017:27017
+    volumes:
+      - /data/db
+      - ./data:/import
+  node:
+    build: ./node/
+    volumes:
+      - ./app:/src
+    ports:
+      - 3030:3000
+    command: npm start

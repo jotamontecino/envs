@@ -1,0 +1,7 @@
+/*/node_modules
+/*.csv
+/*.json
+/data/*.json
+
+.DS_STORE
+/*/.DS_STORE
