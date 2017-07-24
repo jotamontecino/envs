@@ -1,0 +1,29 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+     - "5000:5000"
+    links:
+      - redis
+    command: python app.py
+    container_name: service_web
+    volumes:
+      - /home/docker/web:/usr/src/app
+  redis:
+    image: "redis:alpine"
+    container_name: service_redis
+  rabbitmq:
+    image: "rabbitmq:3"
+    container_name: service_rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER : "user"
+      - RABBITMQ_DEFAULT_PASS : "password"
+  mongo:
+    image: mongo:latest
+    container_name: service_mongo
+    ports:
+        - 27017:27017
+    volumes:
+      - /data/db
+      - /home/docker/service:/service

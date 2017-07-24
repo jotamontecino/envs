@@ -1,0 +1,15 @@
+# Production
+Flask >= 0.12.2
+redis
+mysql-python
+simplejson
+Flask-Script
+pika
+pymongo >= 3.4.0
+requests
+
+# Development
+coverage ~= 3.7.1
+flake8 ~= 2.1
+mkdocs ~= 0.12
+tox ~= 2.0
