@@ -1,0 +1,6 @@
+# Production
+tensorflow
+numpy
+matplotlib
+#cuda
+tflearn
