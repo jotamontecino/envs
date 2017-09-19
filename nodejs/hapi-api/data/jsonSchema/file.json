@@ -1,0 +1,13 @@
+{
+  "urn": "string",
+  "filename": "string",
+  "template": {
+    "name": "string",
+    "version": "integer"
+  },
+  "resource": {},
+  "application": "string",
+  "priority": "0",
+  "status" : "string: pending||processing||error",
+  "url": "string",
+}
